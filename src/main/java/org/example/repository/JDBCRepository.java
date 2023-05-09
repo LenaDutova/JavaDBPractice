@@ -1,4 +1,4 @@
-package org.example.db;
+package org.example.repository;
 
 import org.example.Main;
 import org.example.dto.Minion;
@@ -11,8 +11,8 @@ import java.util.Set;
 
 import static org.example.Main.*;
 
-public class JDBCManager
-        implements DBManager {
+public class JDBCRepository
+        implements DBRepository {
 
     private static final String SEARCH_VILLAINS = "SELECT name FROM villain;";
     private static final String SEARCH_VILLAIN_BY_NAME = "SELECT nickname, evilness, \"nameMinion\", weakness, \"eyeCount\"" +
@@ -25,12 +25,12 @@ public class JDBCManager
     private static final String REMOVE_CONTRACT = "DELETE FROM contract WHERE \"nameVillain\" = ? AND \"nameMinion\" = ?;";
 
 //    public static final JDBCManager INSTANCE = new JDBCManager(); // простой Singleton, для обязательных в использовании объектов
-    private static JDBCManager INSTANCE;    // Singleton, с "ленивой" инициализацией (по требованию)
+    private static JDBCRepository INSTANCE;    // Singleton, с "ленивой" инициализацией (по требованию)
 
     /**
      * Приватный конструктор
      */
-    private JDBCManager() {
+    private JDBCRepository() {
         checkDriver();
     }
 
@@ -40,9 +40,9 @@ public class JDBCManager
      *
      * @return возвращает ссылку на экземпляр этого класса
      */
-    public static synchronized JDBCManager getInstance() {
+    public static synchronized JDBCRepository getInstance() {
         if (INSTANCE == null){
-            INSTANCE = new JDBCManager();
+            INSTANCE = new JDBCRepository();
         }
         return INSTANCE;
     }

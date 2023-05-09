@@ -1,4 +1,4 @@
-package org.example.db;
+package org.example.repository;
 
 import org.example.dto.Minion;
 import org.example.dto.Villain;
@@ -6,7 +6,7 @@ import org.example.dto.Villains;
 
 import java.util.Set;
 
-public interface DBManager {
+public interface DBRepository {
     Set<Villains> getVillains ();
     Villain getVillain (String name);
 

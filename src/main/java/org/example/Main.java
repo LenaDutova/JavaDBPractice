@@ -1,13 +1,14 @@
 package org.example;
 
-import org.example.db.DBManager;
-import org.example.db.DatabaseManagementSystems;
-import org.example.db.JDBCManager;
+import org.example.repository.DBRepository;
+import org.example.repository.DatabaseManagementSystems;
+import org.example.repository.JDBCRepository;
 import org.example.dto.Minion;
 import org.example.dto.Villain;
 import org.example.dto.Villains;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.Optional;
 import java.util.Set;
 
@@ -52,9 +53,10 @@ public class Main {
     // region // testing
 
     private static void checkJdbc(){
-        DBManager manager = JDBCManager.getInstance();
+        DBRepository manager = JDBCRepository.getInstance();
 
-        System.out.println(manager.getVillains());
+        Set<Villains> villains = manager.getVillains();
+        System.out.println(villains);
 
         Villain dto =
 //                manager.getVillain("Джокер");

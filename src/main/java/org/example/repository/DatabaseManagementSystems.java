@@ -1,4 +1,4 @@
-package org.example.db;
+package org.example.repository;
 
 public enum DatabaseManagementSystems {
 
