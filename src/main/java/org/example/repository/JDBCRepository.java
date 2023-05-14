@@ -202,7 +202,7 @@ public class JDBCRepository
                     statement.setString(2, minion.getName());
                     counter -= statement.executeUpdate();
                 } catch (SQLException e) {
-                    if (e.getSQLState().equalsIgnoreCase("23505")){
+                    if (Main.DATABASE.isDuplicateInsert(e)){
                         Main.log(this, "Contract between " + villain.getName() + " and " + minion.getName() + " already concluded");
                     } else {
                         Main.log(this, "SQLState: " + ((SQLException) e).getSQLState());
