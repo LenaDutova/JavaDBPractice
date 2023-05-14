@@ -41,8 +41,6 @@ public class Main {
     public static final String DATABASE_URL = DATABASE.getProtocol() + URL + DATABASE_NAME;
 
     public static void main(String[] args) {
-        Optional<Villains> optional1 = Optional.of(new Villains("a"));
-        Optional<Villains> optional2 = Optional.empty();
         checkJdbc();
     }
 
@@ -59,8 +57,8 @@ public class Main {
         System.out.println(villains);
 
         Villain dto =
-//                manager.getVillain("Джокер");
-                manager.getVillain("Том Реддл");
+//                manager.getVillain(new Villains("Джокер"));
+                manager.getVillain(new Villains("Том Реддл"));
         System.out.println(dto);
 
         Set<Minion> minions = manager.getFreeMinions();

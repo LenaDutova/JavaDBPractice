@@ -8,7 +8,7 @@ import java.util.Set;
 
 public interface DBRepository {
     Set<Villains> getVillains ();
-    Villain getVillain (String name);
+    Villain getVillain (Villains dto);
 
     Set<Minion> getFreeMinions ();
 

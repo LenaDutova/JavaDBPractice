@@ -157,10 +157,18 @@ public class SimpleJDBC {
             connection.close();
 
         } catch (SQLException e) {
-            System.out.println("SQLState: " + e.getSQLState());
-            System.out.println("Error Code: " + e.getErrorCode());
+            System.out.println("SQLState: " + e.getSQLState());     // SQL Standard
+            System.out.println("ErrorCode: " + e.getErrorCode());   // Vendor-specific exception code for the Database
             System.out.println("Message: " + e.getMessage());
             e.printStackTrace();
+
+            // если открыли, то все равно закрываем соединение с базой данных
+            try {
+                if (statement != null) statement.close();
+                if (connection != null) connection.close();
+            } catch (SQLException ex){
+                e.printStackTrace();
+            }
         }
 //        finally { // или так закрываем соединение с базой данных, но close() также выбрасывает SQLException
 //            if (statement != null) statement.close();

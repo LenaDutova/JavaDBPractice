@@ -108,32 +108,31 @@ public class JDBCRepository
     }
 
     @Override
-    public Villain getVillain(String name) {
-        // проверка на дурака
-//        if (name == null || name.isBlank()){
-//            Main.log(this, "Need villain name");
-//            return null;
-//        }
+    public Villain getVillain(Villains dto) {
+        if (dto == null){
+            Main.log(this, "Need villain name");
+            return null;
+        }
 
-        Villain dto = null;
+        Villain villain = null;
         try (Connection connection = openConnection();
              PreparedStatement statement = connection.prepareStatement(SEARCH_VILLAIN_BY_NAME)) {
-            statement.setString(1, name); // индексация с 1
+            statement.setString(1, dto.getName()); // индексация с 1
 
             ResultSet rs = statement.executeQuery();
             while (rs.next()) {
-                if (dto == null) {
+                if (villain == null) {  // анализ первой строки ответа
                     String nickname = rs.getString("nickname");
                     int evilness = rs.getInt("evilness");
-                    dto = new Villain(name, nickname, evilness);
+                    villain = new Villain(dto.getName(), nickname, evilness);
                 }
 
-                // а есть ли пособнички?
+                // а если есть пособники?
                 if (rs.getString("nameMinion") != null) {
                     String minionName = rs.getString("nameMinion");
                     String weakness = rs.getString("weakness");
                     int eyeCount = rs.getInt("eyeCount");
-                    dto.addMinion(new Minion(minionName, weakness, eyeCount));
+                    villain.addMinion(new Minion(minionName, weakness, eyeCount));
                 }
             }
         } catch (SQLException e) {
@@ -145,7 +144,7 @@ public class JDBCRepository
         } catch (NullPointerException e){
             Main.log(this, "Something wrong with connection to database");
         }
-        return dto;
+        return villain;
     }
 
     @Override
