@@ -15,14 +15,25 @@ public class JDBCRepository
         implements DBRepository {
 
     private static final String SEARCH_VILLAINS = "SELECT name FROM villain;";
-    private static final String SEARCH_VILLAIN_BY_NAME = "SELECT nickname, evilness, \"nameMinion\", weakness, \"eyeCount\"" +
+    private static final String SEARCH_VILLAIN_BY_NAME =
+            "SELECT nickname, evilness, name_minion, weakness, eye_count" +
             "FROM villain AS x " +
-            "LEFT JOIN contract ON x.name = \"nameVillain\" " +
-            "LEFT JOIN minion ON \"nameMinion\" = minion.name " +
+            "LEFT JOIN contract ON x.name = name_villain " +
+            "LEFT JOIN minion ON name_minion = minion.name " +
             "WHERE x.name = ?;";
-    private static final String SEARCH_FREE_MINIONS = "SELECT name, \"eyeCount\", weakness FROM minion WHERE NOT EXISTS (SELECT \"nameMinion\" FROM contract WHERE contract.\"nameMinion\" = minion.name);";
-    private static final String ADD_CONTRACT = "INSERT INTO contract (\"nameVillain\", \"nameMinion\") VALUES (?, ?);";
-    private static final String REMOVE_CONTRACT = "DELETE FROM contract WHERE \"nameVillain\" = ? AND \"nameMinion\" = ?;";
+    private static final String SEARCH_FREE_MINIONS =
+            "SELECT name, weakness, eye_count " +
+            "FROM minion  AS x " +
+            "WHERE NOT EXISTS " +
+                "(SELECT name_minion " +
+                "FROM contract " +
+                "WHERE x.name = contract.name_minion);";
+    private static final String ADD_CONTRACT =
+            "INSERT INTO contract (name_villain, name_minion) " +
+            "VALUES (?, ?);";
+    private static final String REMOVE_CONTRACT =
+            "DELETE FROM contract " +
+            "WHERE name_villain = ? AND name_minion = ?;";
 
 //    public static final JDBCManager INSTANCE = new JDBCManager(); // простой Singleton, для обязательных в использовании объектов
     private static JDBCRepository INSTANCE;    // Singleton, с "ленивой" инициализацией (по требованию)
@@ -92,7 +103,7 @@ public class JDBCRepository
             while (rs.next()) {
                 if (villains == null) villains = new HashSet<Villains>();
 
-                String name = rs.getString("name");
+                String name = rs.getString(1);
                 villains.add(new Villains(name));
             }
         } catch (SQLException e) {
@@ -120,18 +131,22 @@ public class JDBCRepository
             statement.setString(1, dto.getName()); // индексация с 1
 
             ResultSet rs = statement.executeQuery();
+            for (int i = 1; i <= rs.getMetaData().getColumnCount(); i++) {
+                System.out.println(rs.getMetaData().getColumnLabel(i));
+            };
+
             while (rs.next()) {
                 if (villain == null) {  // анализ первой строки ответа
-                    String nickname = rs.getString("nickname");
-                    int evilness = rs.getInt("evilness");
+                    String nickname = rs.getString(1);
+                    int evilness = rs.getInt(2);
                     villain = new Villain(dto.getName(), nickname, evilness);
                 }
 
                 // а если есть пособники?
-                if (rs.getString("nameMinion") != null) {
-                    String minionName = rs.getString("nameMinion");
-                    String weakness = rs.getString("weakness");
-                    int eyeCount = rs.getInt("eyeCount");
+                if (rs.getString(3) != null) {
+                    String minionName = rs.getString(3);
+                    String weakness = rs.getString(4);
+                    int eyeCount = rs.getInt(5);
                     villain.addMinion(new Minion(minionName, weakness, eyeCount));
                 }
             }
@@ -160,9 +175,9 @@ public class JDBCRepository
             while (rs.next()) {
                 if (minions == null) minions = new HashSet<Minion>();
 
-                String name = rs.getString("name");
-                String weakness = rs.getString("weakness");
-                int eyesCount = rs.getInt("eyeCount");
+                String name = rs.getString(1);
+                String weakness = rs.getString(2);
+                int eyesCount = rs.getInt(3);
                 minions.add(new Minion(name, weakness, eyesCount));
             }
         } catch (SQLException e) {

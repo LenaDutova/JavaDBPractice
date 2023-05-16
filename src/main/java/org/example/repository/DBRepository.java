@@ -1,12 +1,11 @@
 package org.example.repository;
 
-import org.example.dto.Minion;
-import org.example.dto.Villain;
-import org.example.dto.Villains;
+import org.example.dto.*;
 
 import java.util.Set;
 
 public interface DBRepository {
+
     Set<Villains> getVillains ();
     Villain getVillain (Villains dto);
 

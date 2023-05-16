@@ -3,13 +3,9 @@ package org.example;
 import org.example.repository.DBRepository;
 import org.example.repository.DatabaseManagementSystems;
 import org.example.repository.JDBCRepository;
-import org.example.dto.Minion;
-import org.example.dto.Villain;
-import org.example.dto.Villains;
+import org.example.dto.*;
 
 import java.util.Arrays;
-import java.util.Collections;
-import java.util.Optional;
 import java.util.Set;
 
 /**
@@ -41,7 +37,7 @@ public class Main {
     public static final String DATABASE_URL = DATABASE.getProtocol() + URL + DATABASE_NAME;
 
     public static void main(String[] args) {
-        checkJdbc();
+//        checkJdbc();
     }
 
     public static void log(Object obj, String msg){

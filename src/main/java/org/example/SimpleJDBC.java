@@ -1,6 +1,7 @@
 package org.example;
 
 import java.sql.*;
+import java.time.LocalDate;
 
 
 /**
@@ -107,7 +108,7 @@ public class SimpleJDBC {
             System.out.println("Заключение контракта:");
             statement = connection.createStatement();   // оператор запроса
             int rows = statement.executeUpdate(         // запрос на обновление
-                    "INSERT INTO contract (\"nameVillain\", \"nameMinion\") VALUES ('Грю', 'Доктор Нефарио') returning number;",
+                    "INSERT INTO contract (name_villain, name_minion) VALUES ('Грю', 'Доктор Нефарио') returning number;",
                     Statement.RETURN_GENERATED_KEYS);   // и возвращение ключа (или массива атрибутов, заданных по индексам или именам)
             rs = statement.getGeneratedKeys();
             int number = 0;
@@ -123,20 +124,20 @@ public class SimpleJDBC {
             // region 5) Перенос даты начала контракта (изменение)
             System.out.println("Перенос даты начала контракта:");
             statement = connection.createStatement();     // исполнение запроса
-            rs = statement.executeQuery("SELECT start FROM contract WHERE \"nameVillain\"='Грю' AND \"nameMinion\"='Доктор Нефарио';");
-            Date startDate = null;
+            rs = statement.executeQuery("SELECT start FROM contract WHERE name_villain='Грю' AND name_minion='Доктор Нефарио';");
+            LocalDate startDate = null;
 
             while (rs.next()) {
-                startDate = rs.getDate(1);  // узнаем вписанное значение даты
-                startDate.setYear(startDate.getYear() - 2);
+                startDate = rs.getDate(1).toLocalDate();  // узнаем вписанное значение даты
+                startDate.minusYears(2);
             }
 
             rows = statement.executeUpdate(
-                    "UPDATE contract SET start=\'" + startDate + "\' WHERE \"nameVillain\"='Грю' AND \"nameMinion\"='Доктор Нефарио';",
+                    "UPDATE contract SET start=\'" + startDate + "\' WHERE name_villain='Грю' AND name_minion='Доктор Нефарио';",
                     4);
             rs = statement.getGeneratedKeys();
             while (rs.next()) {
-                startDate = rs.getDate(4);
+                startDate = rs.getDate(4).toLocalDate();
             }
 
             System.out.println("Обновлено записей: " + rows);
@@ -147,7 +148,7 @@ public class SimpleJDBC {
             // region 6) Разрыв контракта (удаление)
             System.out.println("Разрыв контракта:");
             statement = connection.createStatement();     // исполнение запроса
-            rows = statement.executeUpdate("DELETE FROM contract WHERE \"nameVillain\"='Грю' AND \"nameMinion\"='Доктор Нефарио';");
+            rows = statement.executeUpdate("DELETE FROM contract WHERE name_villain='Грю' AND name_minion='Доктор Нефарио';");
             System.out.println("Удалено записей: " + rows);
             System.out.println();
             // endregion
